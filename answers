@@ -39,11 +39,17 @@ Using the SQLite3 Database file given to you as the source of data to answer the
 
 9. Select the name and price of the second from cheapest show.
 
-  select name, price from shows where price not in (select min(price) from shows) order by price limit 1;
+  select name, price from shows where price not in (select min(price) from shows) order by price limit 1; -- bad answer
+
+  select name, price from shows order by price asc limit 1 offset 1; -- better answer
 
 9. Select the time for the Edinburgh Royal Tattoo.
 
- select time from times where  (select id from shows where show name = 'Edinburgh Royal Tattoo');
+ select time from times where id =  (select id from shows where show name = 'Edinburgh Royal Tattoo');   -- nested select
+
+ select time from shows, times where name='Edinburgh Royal Tattoo' and shows.id = times.show_id; -- better way
+
+ select time from times join shows on shows.id = times.show_id where name = 'Edinburgh Royal Tattoo'; -- explicit join
 
 10. Select the names of all users whose names start with the letter "N".
 
@@ -55,16 +61,30 @@ Using the SQLite3 Database file given to you as the source of data to answer the
 
 13. Select the number of users who want to see "Shitfaced Shakespeare".
 
-  select count(*) from (select user_id from shows_users where user_id=(select id from shows where name = 'Shitfaced Shakespeare'));
+  select count(*) from (select user_id from shows_users where user_id=(select id from shows where name = 'Shitfaced Shakespeare')); -- nested select
+
+  select count(su.id) from shows_users su 
+  join shows s on su.show_id = s.id 
+  where s.name = 'Shitfaced Shakespeare'; --better
 
 
-14. Select all of the user names and the count of shows they're going to see.
+14. Select all of the user names and the count of shows they''re going to see.
 
   select user_id, count(user_id) from shows_users group by user_id; -- doesnt display user names (join??)
+  select users.name, count(shows_user.show_id) 
+  from users inner join shows_users
+  on users.id = shows_users.user_id
+  group by name;
+
+select u.name, count(su.show_id) from users u left join shows_users su on su.user_id = u.id group by u.id; -- best way
 
 15. SELECT all users who are going to a show at 17:15.
 
   select name from users where id in (select show_id from times where time = '17:15');
+
+  select u.name from users u join shows_users su on u.id = su.user_id join times t on su.show_id = t.show_id = id where t.time = '17:15';
+
+
 
 16. Insert a user with the name "Antonio Goncalves" into the users table.
 
@@ -90,7 +110,10 @@ Using the SQLite3 Database file given to you as the source of data to answer the
 
 21. Deletes the shows for the user you just deleted.
 
-  delete from shows_users where user_id=19;
+  delete from shows_users where user_id=19; -- wrong
+
+  DELETE FROM shows_users WHERE user_id NOT IN (SELECT id FROM users);
+
 
 
 ## Hints
