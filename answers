@@ -1,0 +1,100 @@
+
+## SQL Questions
+
+Using the SQLite3 Database file given to you as the source of data to answer the questions.  Copy and the SQL command you have used to get the answer, and paste it below the question, along with the result they gave.
+
+
+
+1. Select the names of all users.
+
+  select name from users;
+
+2. Select the names of all shows that cost less than £15.
+
+  select name from shows where price < 15.00;
+
+3. Select the names and prices of all shows, ordered by price in ascending order.
+
+  select name, price from shows order by price;
+
+4. Select the average price of all shows.
+
+  select AVG(price)AS PriceAverage from shows;
+
+5. Select the price of the least expensive show.
+
+    select price from shows order by price limit 1;
+
+6. Select the sum of the price of all shows.
+
+  select sum(price) from shows;
+
+7. Select the sum of the price of all shows whose prices is less than £20.
+
+  select sum(price) from shows where price<20;
+
+8. Select the name and price of the most expensive show.
+
+  select name, price from shows order by price desc limit 1;
+
+9. Select the name and price of the second from cheapest show.
+
+  select name, price from shows where price not in (select min(price) from shows) order by price limit 1;
+
+9. Select the time for the Edinburgh Royal Tattoo.
+
+ select time from times where  (select id from shows where show name = 'Edinburgh Royal Tattoo');
+
+10. Select the names of all users whose names start with the letter "N".
+
+  select name from users where name like 'N%';
+
+12. Select the names of users whose names contain "mi".
+
+  select name from users where name like '%mi%';
+
+13. Select the number of users who want to see "Shitfaced Shakespeare".
+
+  select count(*) from (select user_id from shows_users where user_id=(select id from shows where name = 'Shitfaced Shakespeare'));
+
+
+14. Select all of the user names and the count of shows they're going to see.
+
+  select user_id, count(user_id) from shows_users group by user_id; -- doesnt display user names (join??)
+
+15. SELECT all users who are going to a show at 17:15.
+
+  select name from users where id in (select show_id from times where time = '17:15');
+
+16. Insert a user with the name "Antonio Goncalves" into the users table.
+
+  insert into users (name) values ('Antonio Goncalves');
+
+17. Select the id of the user with your name.
+
+  select id from users where name='Craig Lamont';
+
+18. Insert a record that Antonio Goncalves wants to attend the show "Two girls, one cup of comedy".
+
+
+  insert into shows_users (show_id, user_id) values (( select id from shows where name='Two girls, one cup of comedy'), (select id from users where name='Antonio Goncalves'));
+
+
+19. Updates the name of the "Antonio Goncalves" user to be "Tony Goncalves".
+
+  update users set name='Tony Goncalves' where name='Antonio Goncalves';
+
+20. Deletes the user with the name 'Tony Goncalves'.
+  
+  delete from users where name='Tony Goncalves';
+
+21. Deletes the shows for the user you just deleted.
+
+  delete from shows_users where user_id=19;
+
+
+## Hints
+
+  - As with anything, if you get stuck, move on, then go back if you have time.
+  - Don't spend all night on it!
+  - Use resources online to solve harder ones - there are solutions to these questions that work with what we've learnt today, but other tools exist in SQL that could make the queries 'better' or 'easier'.
