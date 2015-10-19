@@ -57,6 +57,7 @@ currenthotel = gets.chomp
 puts "Who is checking out?"
 guest = gets.chomp
 self.delete_guest(currenthotel, guest)
+
 puts "#{guest} has been checked out!"
 end
 def list_hotels

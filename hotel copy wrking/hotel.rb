@@ -53,11 +53,10 @@ class Hotel
     people.each { |x, y| puts x }
   end
 
-  def remove_guest(name, room)
-   
+  def remove_guest(name)
+    binding.pry;''
     #self.rooms[1].guests.delete(1)
     self.people.delete(name)
-    self.rooms[room].guests.delete(name)
   end
 
   def get_revenue
